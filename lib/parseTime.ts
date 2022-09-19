@@ -50,7 +50,7 @@ export function parseTime(timeString: number | string, options?: any): number | 
 			if (!unitName) {
 				return errorOrNull(
 					new Error(`Unknown unit ${unit} on locale ${options?.locale ?? 'en-US'}.`),
-					options?.throwError ?? true,
+					options?.throwError ?? false,
 				);
 			}
 

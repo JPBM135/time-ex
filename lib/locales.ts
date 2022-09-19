@@ -1,7 +1,7 @@
 import { locales, type TimeStrings } from './commons.js';
 import { pluralize, validateTimeStrings } from './utils.js';
 
-export const enUs = {
+const enUs = {
 	milliseconds: pluralize(['ms', 'msec', 'millisecond']),
 	seconds: pluralize(['s', 'sec', 'second']),
 	minutes: pluralize(['m', 'min', 'minute']),
@@ -12,7 +12,7 @@ export const enUs = {
 	years: pluralize(['y', 'yr', 'year']),
 };
 
-export const ptBr = {
+const ptBr = {
 	milliseconds: pluralize(['ms', 'msec', 'milissegundo']),
 	seconds: pluralize(['s', 'seg', 'segundo']),
 	minutes: pluralize(['m', 'min', 'minuto']),
@@ -23,7 +23,7 @@ export const ptBr = {
 	years: pluralize(['a', 'ano']),
 };
 
-export const es = {
+const es = {
 	milliseconds: pluralize(['ms', 'mseg', 'milisegundo']),
 	seconds: pluralize(['s', 'seg', 'segundo']),
 	minutes: pluralize(['m', 'min', 'minuto']),

@@ -85,6 +85,11 @@ describe('Parse Time: String ==> Number', () => {
 		expect(parseTime('1.5 year')).toStrictEqual(BASE_VALUES.years * 1.5);
 		expect(parseTime('1.5 years')).toStrictEqual(BASE_VALUES.years * 1.5);
 	});
+
+	it('GIVEN unknown time units IT should throw', () => {
+		expect(() => parseTime('1.5 unknown', { throwError: true })).toThrowError();
+		expect(parseTime('1.5 unknown')).toStrictEqual(null);
+	});
 });
 
 describe('Parse Time: Multiple Time Units', () => {
@@ -211,6 +216,11 @@ describe('Parse Time: Number ==> Number', () => {
 		expect(() => parseTime(Number.NaN, { throwError: true })).toThrowError();
 	});
 
+	it('GIVEN a infinity number with the throwError: tre IT should throw', () => {
+		expect(() => parseTime(Number.POSITIVE_INFINITY, { throwError: true })).toThrowError();
+		expect(() => parseTime(Number.NEGATIVE_INFINITY, { throwError: true })).toThrowError();
+	});
+
 	it('GIVEN a invalid number with the throwError: false IT should return null', () => {
 		expect(parseTime(Number.NaN)).toStrictEqual(null);
 		expect(parseTime(Number.NaN)).toStrictEqual(null);
@@ -226,6 +236,7 @@ describe('Parse Time: options', () => {
 
 	it('GIVEN the parse options with locale pt-BR the IT should work', () => {
 		expect(() => parseTime('1m', { locale: 'pt-BR', throwError: true })).not.toThrowError();
+		expect(() => parseTime('1 hora', { locale: 'unknown', throwError: true })).toThrowError();
 
 		expect(parseTime('1m', { locale: 'pt-BR' })).toStrictEqual(BASE_VALUES.minutes);
 		expect(parseTime('1 minuto', { locale: 'pt-BR' })).toStrictEqual(BASE_VALUES.minutes);

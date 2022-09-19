@@ -1,12 +1,43 @@
-import { ok } from 'node:assert';
 import { expect, describe, it, beforeEach } from 'vitest';
-import { BASE_VALUES, locales } from '../lib/commons.js';
+import { BASE_VALUES, locales, REGEX } from '../lib/commons.js';
 import { defaultLocales, registerLocale } from '../lib/locales.js';
 import { parseTime } from '../lib/parseTime.js';
 import { errorOrNull, pluralize } from '../lib/utils.js';
 
 beforeEach(() => {
 	defaultLocales(true);
+});
+
+describe('Regex:', () => {
+	it('GIVEN a valid time IT should match', () => {
+		const time = '1d 2h 3m 4s 5ms';
+		const match = time.match(new RegExp(REGEX, 'g'));
+		expect(match).toStrictEqual(['1d', '2h', '3m', '4s', '5ms']);
+	});
+
+	it('GIVEN a valid time with a space IT should match', () => {
+		const time = '1 d 2 h 3 m 4 s 5 ms';
+		const match = time.match(new RegExp(REGEX, 'g'));
+		expect(match).toStrictEqual(['1 d', '2 h', '3 m', '4 s', '5 ms']);
+	});
+
+	it('GIVEN a valid time with a dot IT should match', () => {
+		const time = '1.5 d 2.5 h 3.5 m 4.5 s 5.5 ms';
+		const match = time.match(new RegExp(REGEX, 'g'));
+		expect(match).toStrictEqual(['1.5 d', '2.5 h', '3.5 m', '4.5 s', '5.5 ms']);
+	});
+
+	it('GIVEN a valid time IT should have the quantity and unit group', () => {
+		expect('1 day'.match(REGEX)?.groups).toEqual({
+			quantity: '1',
+			unit: 'day',
+		});
+
+		expect('1.5 days'.match(REGEX)?.groups).toEqual({
+			quantity: '1.5',
+			unit: 'days',
+		});
+	});
 });
 
 describe('Pluralize:', () => {
@@ -144,6 +175,43 @@ describe('Locales:', () => {
 				weeks: ['w', 'wk', 'week'],
 				months: ['mo', 'month'],
 				years: [],
+			}),
+		).toThrowError();
+	});
+
+	it('REGISTERING a invalid locale with non arrays IT should throw', () => {
+		expect(() =>
+			registerLocale('en-GB', {
+				// @ts-expect-error: Testing invalid locale
+				milliseconds: 'ms',
+				// @ts-expect-error: Testing invalid locale
+				seconds: 's',
+				// @ts-expect-error: Testing invalid locale
+				minutes: 'm',
+				// @ts-expect-error: Testing invalid locale
+				hours: 'h',
+				// @ts-expect-error: Testing invalid locale
+				days: 'd',
+				// @ts-expect-error: Testing invalid locale
+				weeks: 'w',
+				// @ts-expect-error: Testing invalid locale
+				months: 'mo',
+				// @ts-expect-error: Testing invalid locale
+				years: 'y',
+			}),
+		).toThrowError();
+
+		expect(() =>
+			registerLocale('en-GB', {
+				milliseconds: ['ms', 'msec', 'millisecond'],
+				seconds: ['s', 'sec', 'second'],
+				minutes: ['m', 'min', 'minute'],
+				hours: ['h', 'hr', 'hour'],
+				days: ['d', 'day'],
+				weeks: ['w', 'wk', 'week'],
+				months: ['mo', 'month'],
+				// @ts-expect-error: Testing invalid locale
+				years: 'y',
 			}),
 		).toThrowError();
 	});
