@@ -3,17 +3,18 @@ name: Codecov API workflow
 on: [push, pull_request]
 
 jobs:
-  build:
+  run:
     runs-on: ubuntu-latest
-    name: Test code
     steps:
-      - uses: actions/checkout@v1
-      - name: Install requirements
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
         run: npm install
       - name: Run tests and collect coverage
-        run: npm test
-      - name: Upload coverage reports to Codecov
-        run: |
-          curl -Os https://uploader.codecov.io/latest/windows/codecov
-          chmod +x codecov
-          ./codecov -t ${CODECOV_TOKEN}
+        run: npm run test
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
