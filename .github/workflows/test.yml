@@ -1,0 +1,19 @@
+name: Codecov API workflow
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Test code
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install requirements
+        run: npm install
+      - name: Run tests and collect coverage
+        run: npm test
+      - name: Upload coverage reports to Codecov
+        run: |
+          curl -Os https://uploader.codecov.io/latest/windowsS/codecov
+          chmod +x codecov
+          ./codecov -t ${CODECOV_TOKEN}

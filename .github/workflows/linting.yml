@@ -1,0 +1,14 @@
+name: Linting
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Test code
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install requirements
+        run: npm install
+      - name: Run tests and collect coverage
+        run: npm run lint
